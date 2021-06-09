@@ -1,0 +1,1 @@
+https://www.youtube.com/watch?v=YocRq-KesCM&list=LL&index=38&t=2s&ab_channel=TheFullStackJunkieTheFullStackJunkie
