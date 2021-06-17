@@ -11,7 +11,7 @@ exports.register = async (req, res, next) => {
       password,
     });
 
-    sendToken(user, 201, res)
+    sendToken(user, 201, res);
   } catch (error) {
     next(error);
   }
@@ -55,5 +55,3 @@ const sendToken = (user, statusCode, res) => {
   const token = user.getSignedToken();
   res.status(statusCode).json({ success: true, token })
 }
-
-//1:03:12

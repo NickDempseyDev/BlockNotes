@@ -5,6 +5,8 @@ const errorHandler = (err, req, res, next) => {
 	
 	error.message = err.message;
 
+	console.log(err);
+
 	if(err.code === 11000) {
 		const message = `Duplicate filed value enter`;
 		error = new ErrorResponse(message, 400);
