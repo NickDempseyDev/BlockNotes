@@ -194,9 +194,3 @@ exports.deleteNote = async (req, res, next) => {
     next(error);
   }
 };
-
-// {
-//   $push: {
-//     blocks: text,
-//   },
-// }
