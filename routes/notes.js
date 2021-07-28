@@ -7,7 +7,7 @@ const { protect } = require('../middleware/auth');
 router.route("/createnote").put(protect, createNote);
 router.route("/updatenote").put(protect, updateNote);
 router.route("/getnotebyid").get(protect, getNoteById);
-router.route("/getallnotes").get(protect, getAllNotes)
+router.route("/getallnotes").get(protect, getAllNotes);
 router.route("/deletenote").delete(protect, deleteNote);
 
 module.exports = router;

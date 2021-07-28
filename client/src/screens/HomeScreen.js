@@ -4,11 +4,11 @@ import Editor from '../components/Editor';
 
 const HomeScreen = () => {
 
-	const [notes, setNotes] = useState([]);
+	const [notes, setNotes] = useState([{blocks: ""}]);
 	const [currentNote, setCurrentNote] = useState();
 	const [error, setError] = useState(false);
 
-	useEffect(() => {
+	useEffect(async () => {
 		const fetchPrivateDate = async () => {
 		  const config = {
 			headers: {
@@ -18,9 +18,10 @@ const HomeScreen = () => {
 		  };
 	
 		  try {
-			const { data } = await axios.get("/api/notes/getallnotes", config);
-			await setNotes(data.data);
-			await setCurrentNote(data.data[0]);
+			const data = (await axios.get("/api/notes/getallnotes", config)).data.data;
+			console.log("GET ", data);
+			setNotes(data);
+			setCurrentNote(data[1]);
 		  } catch (error) {
 			localStorage.removeItem("authToken");
 			setError(true);
@@ -34,8 +35,7 @@ const HomeScreen = () => {
 
 	return (
 		<div>
-			
-			{error ? <button onClick={() => {window.location = "/login"}}>Login</button> : <Editor note={currentNote}/>}
+			{error ? <button onClick={() => {window.location = "/login"}}>Login</button> : currentNote ? <Editor note={currentNote}/> : null}
 		</div>
 	)
 }
