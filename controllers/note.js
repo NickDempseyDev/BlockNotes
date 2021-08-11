@@ -43,7 +43,6 @@ exports.createNote = async (req, res, next) => {
 
 exports.getAllNotes = async (req, res, next) => {
   const id = req.user.id;
-
   try {
     const user = await User.findById({
       _id: id,
@@ -71,7 +70,6 @@ exports.getAllNotes = async (req, res, next) => {
         continue;
       }
     }
-
     res.status(200).json({
       success: true,
       data: notesArr,
@@ -110,10 +108,10 @@ exports.updateNote = async (req, res, next) => {
   const text = req.body.text;
   const name = req.body.name;
   const note_id = req.body.note_id;
+  const id = req.user.id;
 
   try {
-    const id = req.user.id;
-
+    console.log(req.body);
     const payload = await Note.findById({
       _id: note_id,
       user_id: id,
@@ -123,26 +121,16 @@ exports.updateNote = async (req, res, next) => {
       return next(new ErrorResponse("This is not your note to update", 401));
     }
 
-    const note = await Note.updateOne(
-      {
-        _id: note_id,
-      },
-      {
-        title_: name,
-        blocks: text,
-        user_id: id,
-      }
-    );
+    payload.title_ = name;
+    payload.blocks = text;
 
-    if (!note) {
-      return next(new ErrorResponse("Unable to update note", 401));
-    }
-
+    payload.save();
+    console.log("after save");
     res.status(200).json({
       success: true,
-      data: note,
     });
   } catch (error) {
+    console.log("errrrr");
     next(error);
   }
 };

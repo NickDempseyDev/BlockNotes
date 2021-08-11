@@ -33,7 +33,6 @@ const Block = (props) => {
           if (textAreaRef.current.selectionStart === 0 && textAreaRef.current.selectionEnd === 0) {
             let text = textAreaRef.current.value;
             await props.focusObj.addToExistingBlock(props.focusObj.index, text);
-            // await props.focusObj.deleteBlock(props.focusObj.index);
           }
         }
         break;
@@ -83,7 +82,7 @@ const Block = (props) => {
           value={text}
           className="block-txtarea"
           autoFocus={focus}
-          onInput={(e) => setText(e.target.value)}
+          onInput={(e) => {setText(e.target.value); props.focusObj.editText(e.target.value, props.focusObj.index)}}
         >
           {text}
         </textarea>

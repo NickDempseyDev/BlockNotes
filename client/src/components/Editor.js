@@ -9,7 +9,7 @@ const Editor = (props) => {
 
   useEffect(async () => {
     if (countRender.current === 0 && props.note.blocks !== undefined) {
-      // set the blocks for the first render 
+      // set the blocks for the first render
       setBlocks(props.note.blocks);
       countRender.current++;
       let size = props.note.blocks.length;
@@ -17,18 +17,16 @@ const Editor = (props) => {
       while (size--) {
         arr.push(false);
       }
-    }
-    else {
+    } else {
       if (JSON.stringify(blocks) === JSON.stringify(props.note)) {
         // This is where a change of note will be handled. Saving, etc.
       }
     }
-    //console.log(props.note.blocks.length);
-  }, [props.note])
+  }, [props.note]);
 
   const createNewBlock = async (idx, newText, oldText) => {
     let arr = blocks.slice();
-    arr.splice(idx, 1, oldText)
+    arr.splice(idx, 1, oldText);
     arr.splice(idx + 1, 0, newText);
     console.log(arr);
     await setBlocks(arr);
@@ -60,39 +58,49 @@ const Editor = (props) => {
   const addToExistingBlock = async (idx, text) => {
     if (idx === 0) return;
     let arr2 = blocks.slice();
-    arr2[idx - 1] += (" " + text);
-    console.log(arr2[idx - 1]);
+    arr2[idx - 1] += " " + text;
     arr2.splice(idx, 1);
     await setBlocks(arr2);
     let newElement = document.querySelectorAll("[tabIndex]")[idx - 1];
     newElement.focus();
     let newElement2 = document.querySelector(":focus");
     newElement2.selectionStart = newElement2.value.length - text.length;
-  }
+  };
 
   const printBlocks = () => {
     console.log(blocks);
-  }
+  };
 
   const saveToDB = async () => {
+    const body = {
+      name: props.note.title_,
+      text: blocks,
+      note_id: props.note._id,
+    };
+
     const config = {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },
-      body: {
-        name: props.note.title_,
-        text: blocks,
-        note_id: props.note._id
-      },
     };
 
     try {
-      await axios.put("/api/notes/updatenote", config);
+      await axios.put(
+        "http://localhost:5000/api/notes/updatenote",
+        body,
+        config
+      );
       console.log("Saved");
     } catch (error) {
       localStorage.removeItem("authToken");
     }
+  };
+
+  const editText = (text, idx) => {
+    let tempBlocks = blocks;
+    tempBlocks[idx] = text;
+    setBlocks(tempBlocks);
   };
 
   return (
@@ -100,12 +108,23 @@ const Editor = (props) => {
       <button onClick={() => saveToDB()}>Save</button>
       {blocks ? (
         blocks.map((block, idx) => {
-          return <Block key={block + idx} text={block} focusObj={{ index: idx, createBlock: createNewBlock, deleteBlock: deleteBlock, addToExistingBlock: addToExistingBlock }} />;
+          return (
+            <Block
+              key={block + idx}
+              text={block}
+              focusObj={{
+                index: idx,
+                editText: editText,
+                createBlock: createNewBlock,
+                deleteBlock: deleteBlock,
+                addToExistingBlock: addToExistingBlock,
+              }}
+            />
+          );
         })
       ) : (
         <UserPromptNoNote />
       )}
-      {/* <button onClick={()=>{printBlocks();}}>BLocks</button> */}
     </div>
   );
 };
